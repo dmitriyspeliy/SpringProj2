@@ -13,6 +13,8 @@ import ru.sky.pro.SpringProj2.HandleException.EmployeeNotFoundException;
 import ru.sky.pro.SpringProj2.Service.EmployeeService;
 
 import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/employee")
@@ -27,26 +29,26 @@ public class EmployeeController {
     }
 
     @GetMapping("/add")
-    public Employee addEmployee(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName) {
-        if (null == firstName || null == lastName
-                || "".equals(firstName) || "".equals(lastName)) {
+    public Employee addEmployee(@RequestParam(value = "fullName") String fullName,
+                                @RequestParam(value = "salary") double salary,
+                                @RequestParam(value = "department") String department) {
+        if (null == fullName || "".equals(fullName)) {
             throw new IllegalArgumentException("Введите все данные");
         }
         try {
-            return employeeService.addEmployee(lastName, firstName);
+            return employeeService.addEmployee(fullName,department,salary);
         } catch (EmployeeAlreadyAddedException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Такое рабочий уже есть");
         }
     }
 
     @GetMapping("/remove")
-    public Employee removeEmployee(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName) {
-        if (null == firstName || null == lastName
-                || "".equals(firstName) || "".equals(lastName)) {
+    public Employee removeEmployee(@RequestParam(value = "fullName") String fullName) {
+        if (null == fullName || "".equals(fullName)) {
             throw new IllegalArgumentException("Введите все данные");
         }
         try {
-            return employeeService.deleteEmployee(lastName);
+            return employeeService.deleteEmployee(fullName);
         } catch (EmployeeNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Рабочий не найден");
         }
@@ -54,16 +56,45 @@ public class EmployeeController {
     }
 
     @GetMapping("/find")
-    public Employee findEmployee(@RequestParam(value = "firstName") String firstName, @RequestParam(value = "lastName") String lastName) {
-        if (null == firstName || null == lastName
-                || "".equals(firstName) || "".equals(lastName)) {
+    public Employee findEmployee(@RequestParam(value = "fullName") String fullName) {
+        if (null == fullName || "".equals(fullName)) {
             throw new IllegalArgumentException("Введите все данные");
         }
         try {
-            return employeeService.findEmployee(lastName);
+            return employeeService.findEmployee(fullName);
         } catch (EmployeeNotFoundException e) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Рабочий не найден");
         }
+    }
+
+    @GetMapping("/departments/max-salary")
+    public Employee findEmployeewithMaxSalary(@RequestParam(value = "departmentId") String department) {
+        if (null == department || "".equals(department)) {
+            throw new IllegalArgumentException("Введите все данные");
+        }
+        return employeeService.getEmployeesFromDepartAndMaxSal(department);
+    }
+
+    @GetMapping("/departments/min-salary")
+    public Employee findEmployeewithMinSalary(@RequestParam(value = "departmentId") String department) {
+        if (null == department || "".equals(department)) {
+            throw new IllegalArgumentException("Введите все данные");
+        }
+        return employeeService.getEmployeesFromDepartAndMinSal(department);
+    }
+
+
+    @GetMapping("/departments/all")
+    public List<Employee> findAllEmployeeWithDepart(@RequestParam(value = "departmentId") String department) {
+        if (null == department || "".equals(department)) {
+            throw new IllegalArgumentException("Введите все данные");
+        }
+        return employeeService.getEmployeesFromDepart(department);
+    }
+
+    @GetMapping("/all")
+    public Map<String, List<Employee>> findAllEmployeeWithDepart() {
+        return employeeService.getEmployeeAndDepartment();
     }
 
 }

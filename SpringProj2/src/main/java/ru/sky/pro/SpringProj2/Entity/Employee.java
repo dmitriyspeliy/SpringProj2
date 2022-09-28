@@ -6,6 +6,7 @@ import lombok.Data;
 @Data
 @AllArgsConstructor
 public class Employee {
-        private String lastName;
-        private String firstName;
+        private String fullname;
+        private String department;
+        private double salary;
 }
