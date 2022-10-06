@@ -32,9 +32,7 @@ public class EmployeeController {
     public Employee addEmployee(@RequestParam(value = "fullName") String fullName,
                                 @RequestParam(value = "salary") double salary,
                                 @RequestParam(value = "department") String department) {
-        if (null == fullName || "".equals(fullName)) {
-            throw new IllegalArgumentException("Введите все данные");
-        }
+       employeeService.checkIsEmpty(fullName);
         try {
             return employeeService.addEmployee(fullName,department,salary);
         } catch (EmployeeAlreadyAddedException e) {
@@ -44,9 +42,7 @@ public class EmployeeController {
 
     @GetMapping("/remove")
     public Employee removeEmployee(@RequestParam(value = "fullName") String fullName) {
-        if (null == fullName || "".equals(fullName)) {
-            throw new IllegalArgumentException("Введите все данные");
-        }
+        employeeService.checkIsEmpty(fullName);
         try {
             return employeeService.deleteEmployee(fullName);
         } catch (EmployeeNotFoundException e) {
@@ -57,9 +53,7 @@ public class EmployeeController {
 
     @GetMapping("/find")
     public Employee findEmployee(@RequestParam(value = "fullName") String fullName) {
-        if (null == fullName || "".equals(fullName)) {
-            throw new IllegalArgumentException("Введите все данные");
-        }
+        employeeService.checkIsEmpty(fullName);
         try {
             return employeeService.findEmployee(fullName);
         } catch (EmployeeNotFoundException e) {
@@ -69,26 +63,20 @@ public class EmployeeController {
 
     @GetMapping("/departments/max-salary")
     public Employee findEmployeewithMaxSalary(@RequestParam(value = "departmentId") String department) {
-        if (null == department || "".equals(department)) {
-            throw new IllegalArgumentException("Введите все данные");
-        }
+        employeeService.checkIsEmpty(department);
         return employeeService.getEmployeesFromDepartAndMaxSal(department);
     }
 
     @GetMapping("/departments/min-salary")
     public Employee findEmployeewithMinSalary(@RequestParam(value = "departmentId") String department) {
-        if (null == department || "".equals(department)) {
-            throw new IllegalArgumentException("Введите все данные");
-        }
+        employeeService.checkIsEmpty(department);
         return employeeService.getEmployeesFromDepartAndMinSal(department);
     }
 
 
     @GetMapping("/departments/all")
     public List<Employee> findAllEmployeeWithDepart(@RequestParam(value = "departmentId") String department) {
-        if (null == department || "".equals(department)) {
-            throw new IllegalArgumentException("Введите все данные");
-        }
+        employeeService.checkIsEmpty(department);
         return employeeService.getEmployeesFromDepart(department);
     }
 

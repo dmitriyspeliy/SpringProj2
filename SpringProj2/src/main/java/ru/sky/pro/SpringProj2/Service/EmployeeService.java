@@ -1,7 +1,10 @@
 package ru.sky.pro.SpringProj2.Service;
 
 import lombok.Data;
+import org.apache.commons.lang3.StringUtils;
+import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.web.server.ResponseStatusException;
 import ru.sky.pro.SpringProj2.Entity.Employee;
 import ru.sky.pro.SpringProj2.HandleException.EmployeeAlreadyAddedException;
 import ru.sky.pro.SpringProj2.HandleException.EmployeeNotFoundException;
@@ -45,8 +48,10 @@ public class EmployeeService {
     //на наличие работника и исключение EmployeeAlreadyAddedException
     //добавить работника
     public Employee addEmployee(String fullName, String department, double salary) throws EmployeeAlreadyAddedException {
-        boolean result = arr.stream().anyMatch(x -> x.getFullname().equals(fullName));
-        Employee employee = null;
+        fullName = StringUtils.capitalize(fullName);
+        String finalFullName = fullName;
+        boolean result = arr.stream().anyMatch(x -> x.getFullname().equals(finalFullName));
+        Employee employee;
         if (!result) {
             employee = new Employee(fullName, department, salary);
             arr.add(employee);
@@ -85,5 +90,11 @@ public class EmployeeService {
             }
         }
         return sortedMap;
+    }
+
+    public void checkIsEmpty(String fullName){
+        if (StringUtils.isEmpty(fullName) && StringUtils.containsAny(fullName,'*','?','!','/','@')){
+            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Введите данные");
+        }
     }
 }
